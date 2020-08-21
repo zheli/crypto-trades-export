@@ -1,2 +1,6 @@
 *.class
 *.log
+*.csv
+project/
+target/
+
