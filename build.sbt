@@ -1,5 +1,6 @@
 lazy val akkaHttpVersion = "10.2.0"
 lazy val akkaVersion = "2.6.8"
+lazy val xchangeVersion = "5.0.1"
 
 lazy val root = (project in file(".")).settings(
   inThisBuild(
@@ -18,9 +19,11 @@ lazy val root = (project in file(".")).settings(
     "ch.qos.logback" % "logback-classic" % "1.2.3",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
     // crypto exchange APIs
-    "org.knowm.xchange" % "xchange-core" % "4.4.1",
-    "org.knowm.xchange" % "xchange-coinmarketcap" % "4.4.1",
-    "org.knowm.xchange" % "xchange-examples" % "4.4.1",
+    "org.knowm.xchange" % "xchange-core" % xchangeVersion,
+    "org.knowm.xchange" % "xchange-coinmarketcap" % xchangeVersion,
+    "org.knowm.xchange" % "xchange-examples" % xchangeVersion,
+    "org.knowm.xchange" % "xchange-stream-core" % xchangeVersion,
+    "org.knowm.xchange" % "xchange-stream-binance" % xchangeVersion,
     // csv tools
     "com.github.tototoshi" %% "scala-csv" % "1.3.6",
     // for parsing command line argument
@@ -28,6 +31,9 @@ lazy val root = (project in file(".")).settings(
     // test relevant
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
     "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
+    "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
     "org.scalatest" %% "scalatest" % "3.0.8" % Test
   )
 )
+
+fork in run := true

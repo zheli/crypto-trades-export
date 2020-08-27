@@ -2,4 +2,6 @@
 Backup your trading history from crypto exchanges
 
 ## Roadmap
-- [ ] Export Coinbase Pro trading history
+- [x] Export Coinbase Pro trading history
+- [x] Export Binance trading history
+- [x] Export Kraken trading history
