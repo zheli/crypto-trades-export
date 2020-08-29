@@ -2,10 +2,9 @@ package it.softfork
 
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.DateTime
-import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
 import com.github.tototoshi.csv.CSVWriter
 import com.typesafe.scalalogging.StrictLogging
 import org.rogach.scallop._
@@ -64,7 +63,7 @@ object App extends StrictLogging {
         )
 
       case Some(commandConf.binance) =>
-        val now = DateTime.now
+        val now = ZonedDateTime.now().toLocalDateTime
         val f = new File(s"test-binance-$now.csv")
         val writeHeader = !f.exists()
         val writer = CSVWriter.open(f)
@@ -82,7 +81,7 @@ object App extends StrictLogging {
         writer.close()
 
       case Some(commandConf.kraken) =>
-        val now = DateTime.now
+        val now = ZonedDateTime.now().toLocalDateTime
         val f = new File(s"test-kraken-$now.csv")
         val writeHeader = !f.exists()
         val writer = CSVWriter.open(f)
