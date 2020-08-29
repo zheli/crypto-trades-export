@@ -1,4 +1,4 @@
-# crypto-trading-history-backup-tool
+# crypto-trades-export
 Backup your trading history from crypto exchanges
 
 ## Roadmap

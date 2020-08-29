@@ -9,7 +9,7 @@ lazy val root = (project in file(".")).settings(
       scalaVersion := "2.13.3"
     )
   ),
-  name := "crypto-trading-history-backup-tool",
+  name := "crypto-trades-export",
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
