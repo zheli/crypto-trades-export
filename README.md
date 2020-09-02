@@ -5,15 +5,18 @@ Export your trade history from different crypto exchanges to csv files.
 ### Requirement
 The standalone executable requires Java 8 or later to run. That is, a command like java -version should print a version >= 8.
 
-## Build standalone
-### Linux/MacOS
+### Download
+You can download all the releases in the [release](https://github.com/zheli/crypto-trades-export/releases) page.
+
+### Build standalone yourself
+#### Linux/MacOS
 ```
 curl -fLo coursier https://git.io/coursier-cli && 
 chmod +x coursier && 
 ./coursier bootstrap -r 'bintray:zzzzzz/crypto-trades-export' it.softfork::crypto-trades-export:0.0.2 --standalone -o crypto-trades-export
 ```
     
-### Windows
+#### Windows
 ```
 > bitsadmin /transfer downloadCoursierCli https://git.io/coursier-cli "%cd%\coursier"
 > bitsadmin /transfer downloadCoursierBat https://git.io/coursier-bat "%cd%\coursier.bat"
