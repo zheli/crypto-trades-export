@@ -1,14 +1,27 @@
 # crypto-trades-export
-Backup your trading history from crypto exchanges
+Export your trade history from different crypto exchanges to csv files.
 
-## Set up local development environment
-Create a `.env` file in the root folder and insert the [Github token](https://github.com/settings/tokens):
+## Standalone executable
+### Requirement
+The standalone executable requires Java 8 or later to run. That is, a command like java -version should print a version >= 8.
+
+## Build standalone
+### Linux/MacOS
 ```
-GITHUB_TOKEN="Your github token here"
+curl -fLo coursier https://git.io/coursier-cli && 
+chmod +x coursier && 
+./coursier bootstrap -r 'bintray:zzzzzz/crypto-trades-export' it.softfork::crypto-trades-export:0.0.2 --standalone -o crypto-trades-export
+```
+    
+### Windows
+```
+> bitsadmin /transfer downloadCoursierCli https://git.io/coursier-cli "%cd%\coursier"
+> bitsadmin /transfer downloadCoursierBat https://git.io/coursier-bat "%cd%\coursier.bat"
+> coursier bootstrap -r 'bintray:zzzzzz/crypto-trades-export' it.softfork::crypto-trades-export:0.0.2 --standalone -o crypto-trades-export
 ```
 
 ## Roadmap
 - [x] Export Coinbase Pro trading history
 - [x] Export Binance trading history
 - [x] Export Kraken trading history
-- [ ] Make it possible to run as standalone
+- [x] Make it possible to run as standalone
