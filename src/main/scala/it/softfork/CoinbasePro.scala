@@ -1,6 +1,5 @@
 package it.softfork
 
-import java.io.File
 import java.text.SimpleDateFormat
 
 import com.github.tototoshi.csv.CSVWriter
@@ -16,7 +15,7 @@ import scala.jdk.CollectionConverters._
 
 object CoinbasePro extends StrictLogging {
 
-  def download(apiKey: String, apiSecret: String, apiPassphrase: String) = Future {
+  def exportCSV(writer: CSVWriter, apiKey: String, apiSecret: String, apiPassphrase: String) = Future {
     val exSpec = new CoinbaseProExchange().getDefaultExchangeSpecification()
     exSpec.setApiKey(apiKey)
     exSpec.setSecretKey(apiSecret)
@@ -26,16 +25,10 @@ object CoinbasePro extends StrictLogging {
     val tradeService = exchange.getTradeService
     val currencyPairs = exchange.getExchangeSymbols().asScala.toSeq
     logger.info(s"Found currency pairs: $currencyPairs")
-    val f = new File("test.csv")
-    if (f.exists()) {
-      f.delete()
-    }
-    val writer = CSVWriter.open(f)
-    writer.writeRow(List("Type", "Pair", "Amount", "Price", "Time"))
     currencyPairs.zipWithIndex.foreach {
       case (pair, i) =>
         if (i % 8 == 0) {
-          logger.debug("Sleep for 0.5 seconds due to API rate limiting")
+          logger.trace("Sleep for 0.5 seconds due to API rate limiting")
           Thread.sleep(500)
         }
         val params = new CoinbaseProTradeHistoryParams()
@@ -45,15 +38,13 @@ object CoinbasePro extends StrictLogging {
         if (tradeCount > 0) {
           logger.info(s"Found ${tradeCount} trades for $pair")
           trades.forEach { t: Trade =>
-            logger.info(s"Trade: $t")
             val datetimeWithoutTimezoneFormat = new SimpleDateFormat("yyyy-M-dd hh:mm:ss")
             val timestampString = datetimeWithoutTimezoneFormat.format(t.getTimestamp)
             writer.writeRow(
-              List(t.getType, t.getCurrencyPair, t.getOriginalAmount, t.getPrice, timestampString)
+              List("coinbasepro", t.getType, t.getCurrencyPair, t.getOriginalAmount, t.getPrice, timestampString)
             )
           }
         }
     }
-    writer.close()
   }
 }
