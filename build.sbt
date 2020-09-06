@@ -1,6 +1,6 @@
 lazy val akkaHttpVersion = "10.2.0"
 lazy val akkaVersion = "2.6.8"
-lazy val xchangeVersion = "5.0.1"
+lazy val xchangeVersion = "5.0.2-SNAPSHOT"
 
 lazy val root = (project in file("."))
   .settings(
@@ -21,6 +21,7 @@ lazy val root = (project in file("."))
       // crypto exchange APIs
       "org.knowm.xchange" % "xchange-core" % xchangeVersion,
       "org.knowm.xchange" % "xchange-binance" % xchangeVersion,
+      "org.knowm.xchange" % "xchange-bittrexV3" % xchangeVersion,
       "org.knowm.xchange" % "xchange-coinbasepro" % xchangeVersion,
       "org.knowm.xchange" % "xchange-kraken" % xchangeVersion,
       // csv tools
@@ -35,7 +36,10 @@ lazy val root = (project in file("."))
     )
   )
 
-resolvers += Resolver.bintrayRepo("zzz", "crypto-trades-export")
+resolvers ++= Seq(
+  Resolver.bintrayRepo("zzz", "crypto-trades-export"),
+  "Sonatype OSS Snapshots".at("https://oss.sonatype.org/content/repositories/snapshots")
+)
 
 fork in run := true
 

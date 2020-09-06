@@ -1,11 +1,10 @@
 package it.softfork
 
-import java.text.SimpleDateFormat
-
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Sink, Source}
 import com.github.tototoshi.csv.CSVWriter
 import com.typesafe.scalalogging.StrictLogging
+import it.softfork.Utils._
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.binance.BinanceExchange
 import org.knowm.xchange.binance.service.BinanceTradeHistoryParams
@@ -18,7 +17,7 @@ import scala.jdk.CollectionConverters._
 
 object Binance extends StrictLogging {
 
-  def download(writer: CSVWriter, apiKey: String, apiSecert: String)(implicit system: ActorSystem) = {
+  def exportCSV(writer: CSVWriter, apiKey: String, apiSecert: String)(implicit system: ActorSystem) = {
     val exSpec = new BinanceExchange().getDefaultExchangeSpecification
     exSpec.setApiKey(apiKey)
     exSpec.setSecretKey(apiSecert)
@@ -27,19 +26,13 @@ object Binance extends StrictLogging {
     val currencyPairs = exchange.getExchangeSymbols.asScala.toSeq
     logger.info(s"Found ${currencyPairs.length} currency pairs")
 
-    val datetimeWithoutTimezoneFormat = new SimpleDateFormat("yyyy-M-dd hh:mm:ss")
     def exportTradeHistory(pair: CurrencyPair) = Future {
       logger.debug(s"Getting trades for $pair")
-      val trades = tradeService.getTradeHistory(new BinanceTradeHistoryParams(pair)).getTrades.asScala.toSeq
+      val trades = tradeService.getTradeHistory(new BinanceTradeHistoryParams(pair)).getUserTrades.asScala.toSeq
       if (trades.length > 0) {
         logger.info(s"Found ${trades.length} trades for $pair")
       }
-      trades.foreach { t =>
-        val timestampString = datetimeWithoutTimezoneFormat.format(t.getTimestamp)
-        writer.writeRow(
-          List("binance", t.getType, t.getCurrencyPair, t.getOriginalAmount, t.getPrice, timestampString)
-        )
-      }
+      trades.foreach(trade => writer.writeRow(userTradeToRow("binance", trade)))
       trades
     }
 

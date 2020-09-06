@@ -1,13 +1,11 @@
 package it.softfork
 
-import java.text.SimpleDateFormat
-
 import com.github.tototoshi.csv.CSVWriter
 import com.typesafe.scalalogging.StrictLogging
+import it.softfork.Utils.userTradeToRow
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.coinbasepro.CoinbaseProExchange
 import org.knowm.xchange.coinbasepro.dto.trade.CoinbaseProTradeHistoryParams
-import org.knowm.xchange.dto.marketdata.Trade
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -33,17 +31,11 @@ object CoinbasePro extends StrictLogging {
         }
         val params = new CoinbaseProTradeHistoryParams()
         params.setCurrencyPair(pair)
-        val trades = tradeService.getTradeHistory(params).getTrades
-        val tradeCount = trades.size()
+        val trades = tradeService.getTradeHistory(params).getUserTrades.asScala.toSeq
+        val tradeCount = trades.length
         if (tradeCount > 0) {
           logger.info(s"Found ${tradeCount} trades for $pair")
-          trades.forEach { t: Trade =>
-            val datetimeWithoutTimezoneFormat = new SimpleDateFormat("yyyy-M-dd hh:mm:ss")
-            val timestampString = datetimeWithoutTimezoneFormat.format(t.getTimestamp)
-            writer.writeRow(
-              List("coinbasepro", t.getType, t.getCurrencyPair, t.getOriginalAmount, t.getPrice, timestampString)
-            )
-          }
+          trades.foreach(trade => writer.writeRow(userTradeToRow("coinbasepro", trade)))
         }
     }
   }
