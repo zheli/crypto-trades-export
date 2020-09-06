@@ -11,7 +11,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 class CommandConf(arguments: Seq[String]) extends ScallopConf(arguments) {
-  version("Crypto-trades-export 0.0.1 (c) 2020 Zhe Li (linuxcity.jn@gmail.com)")
+  version("Crypto-trades-export 0.0.1 (c) 2020 Zhe Li <linuxcity.jn@gmail.com>")
   banner("""Usage: crypto-trades-export [OPTION]... 
            |crypto-trades-export will download your trade data from any exchange and export them as a single CSV file.
            |For example, to download all trades from Kraken to kraken-trades-2020.csv file, execute:
