@@ -34,6 +34,11 @@ chmod +x coursier &&
 > coursier bootstrap -r 'bintray:zzzzzz/crypto-trades-export' it.softfork::crypto-trades-export:0.0.2 --standalone -o crypto-trades-export
 ```
 
+## Build native image
+```
+sbt nativeImage
+```
+
 ## Roadmap
 - [x] Export Coinbase Pro trading history
 - [x] Export Binance trading history
