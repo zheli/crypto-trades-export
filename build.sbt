@@ -3,6 +3,7 @@ lazy val akkaVersion = "2.6.8"
 lazy val xchangeVersion = "5.0.1"
 
 lazy val root = (project in file("."))
+  .enablePlugins(NativeImagePlugin)
   .settings(
     inThisBuild(
       List(
@@ -32,7 +33,8 @@ lazy val root = (project in file("."))
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
       "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
       "org.scalatest" %% "scalatest" % "3.0.8" % Test
-    )
+    ),
+    Compile / mainClass := Some("it.softfork.App")
   )
 
 resolvers += Resolver.bintrayRepo("zzz", "crypto-trades-export")
@@ -41,8 +43,6 @@ fork in run := true
 
 // Publish settings
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
-
-// Publish setting
 bintrayRepository := "crypto-trades-export"
 
 // Release setting
