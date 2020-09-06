@@ -15,7 +15,7 @@
 
     <logger name="akka" level="INFO"/>
     <logger name="com.typesafe.sslconfig" level="ERROR"/>
-    <logger name="it.softfork" level="DEBUG"/>
+    <logger name="it.softfork" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="ASYNC"/>

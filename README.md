@@ -39,3 +39,5 @@ chmod +x coursier &&
 - [x] Export Binance trading history
 - [x] Export Kraken trading history
 - [x] Make it possible to run as standalone
+- [ ] Build releases automatically
+- [x] Support Bittrex

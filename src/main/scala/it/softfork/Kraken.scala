@@ -1,9 +1,8 @@
 package it.softfork
 
-import java.text.SimpleDateFormat
-
 import com.github.tototoshi.csv.CSVWriter
 import com.typesafe.scalalogging.StrictLogging
+import it.softfork.Utils._
 import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.kraken.KrakenExchange
 import org.rogach.scallop.Subcommand
@@ -28,15 +27,9 @@ object Kraken extends StrictLogging {
     val currencyPairs = exchange.getExchangeSymbols.asScala.toSeq
     logger.info(s"Found ${currencyPairs.length} currency pairs")
 
-    val datetimeWithoutTimezoneFormat = new SimpleDateFormat("yyyy-M-dd hh:mm:ss")
     val trades = tradeService.getTradeHistory(tradeService.createTradeHistoryParams()).getUserTrades.asScala.toSeq
     logger.info(s"Found ${trades.length} trades")
-    trades.foreach { t =>
-      val timestampString = datetimeWithoutTimezoneFormat.format(t.getTimestamp)
-      writer.writeRow(
-        List("kraken", t.getType, t.getCurrencyPair, t.getOriginalAmount, t.getPrice, timestampString)
-      )
-    }
+    trades.foreach(trade => writer.writeRow(userTradeToRow("kraken", trade)))
     trades
   }
 }
