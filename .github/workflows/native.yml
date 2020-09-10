@@ -14,7 +14,6 @@ jobs:
       matrix:
         os: [macOS-latest, ubuntu-latest]
         include:
-          # Replace "example" with the name your binary
           - os: macOS-latest
             artifact: crypto-trades-export-x86_64-apple-darwin
             binary: target/native-image/crypto-trades-export
@@ -24,6 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: olafurpg/setup-scala@v6
+        with:
+          java-version: openjdk@1.14.0
       - run: git fetch --tags || true
       - run: sbt nativeImage
       - uses: actions/upload-artifact@master
