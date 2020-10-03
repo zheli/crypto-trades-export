@@ -27,7 +27,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
+
+	"time"
 
 	"github.com/adshao/go-binance"
 	"github.com/cheggaaa/pb/v3"
@@ -67,6 +68,10 @@ func getTradingType(trade *binance.TradeV3)  string  {
 	}
 }
 
+func millionsecondsToDatetimeStringg(t int64) string {
+	return time.Unix(0, t * int64(time.Millisecond)).Format("2006-01-02 15:04:05")
+}
+
 func exportTrades(apiKey string, apiSecret string, output string) {
 	client := binance.NewClient(apiKey, apiSecret)
 	listTradesService := client.NewListTradesService()
@@ -101,7 +106,7 @@ func exportTrades(apiKey string, apiSecret string, output string) {
 					getTradingType(t),
 					t.Quantity,
 					t.Price,
-					strconv.FormatInt(t.Time, 10),
+					millionsecondsToDatetimeStringg(t.Time),
 				}
 				w.Write(row)
 			}
