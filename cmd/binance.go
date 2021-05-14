@@ -31,6 +31,7 @@ import (
 	"time"
 
 	"github.com/adshao/go-binance"
+	"github.com/adshao/go-binance/common"
 	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 )
@@ -45,7 +46,9 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("Argument: %s", args[0])
 		apiKey, _ := cmd.Flags().GetString("key")
 		apiSecret, _ := cmd.Flags().GetString("secret")
 		output, _ := cmd.Flags().GetString("output")
@@ -94,6 +97,7 @@ func exportTrades(apiKey string, apiSecret string, output string) {
 	for _, s := range exchangeInfo.Symbols {
 		trades, err := listTradesService.Symbol(s.Symbol).Do(context.Background())
 		if err != nil {
+			fmt.Printf("Error code %d\n", err.(*common.APIError).Code)
 			fmt.Printf("Failed to download, %s\n", err)
 			continue
 		}
