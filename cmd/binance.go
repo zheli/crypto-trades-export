@@ -31,6 +31,7 @@ import (
 	"time"
 
 	"github.com/adshao/go-binance"
+	"github.com/adshao/go-binance/common"
 	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 )
@@ -95,6 +96,7 @@ func exportTrades(apiKey string, apiSecret string, output string) {
 		trades, err := listTradesService.Symbol(s.Symbol).Do(context.Background())
 		if err != nil {
 			fmt.Printf("Failed to download, %s\n", err)
+			fmt.Printf("Code: %d\n", err.(*common.APIError).Code)
 			continue
 		}
 		if len(trades) > 0 {
