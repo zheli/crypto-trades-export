@@ -50,8 +50,9 @@ to quickly create a Cobra application.`,
 		apiKey, _ := cmd.Flags().GetString("key")
 		apiSecret, _ := cmd.Flags().GetString("secret")
 		output, _ := cmd.Flags().GetString("output")
+		debug, _ := cmd.Flags().GetBool("debug")
 		fmt.Printf("Exporting trading history from binance. Output file: %s\n", output)
-		exportTrades(apiKey, apiSecret, output)
+		exportTrades(apiKey, apiSecret, output, debug)
 	},
 }
 
@@ -59,6 +60,7 @@ func init() {
 	rootCmd.AddCommand(binanceCmd)
 	binanceCmd.Flags().StringP("key", "k", "", "API key")
 	binanceCmd.Flags().StringP("secret", "s", "", "API secret")
+	binanceCmd.Flags().BoolP("debug", "d", false, "Enable debug mode")
 }
 
 func getTradingType(trade *binance.TradeV3)  string  {
@@ -73,8 +75,9 @@ func millionsecondsToDatetimeStringg(t int64) string {
 	return time.Unix(0, t * int64(time.Millisecond)).Format("2006-01-02 15:04:05")
 }
 
-func exportTrades(apiKey string, apiSecret string, output string) {
+func exportTrades(apiKey string, apiSecret string, output string, debug bool) {
 	client := binance.NewClient(apiKey, apiSecret)
+	client.Debug = debug
 	listTradesService := client.NewListTradesService()
 	exchangeInfo, err := client.NewExchangeInfoService().Do(context.Background())
 	if err != nil {
