@@ -21,8 +21,8 @@ crypto-trades-export binance \
 
 ## Roadmap
 - [x] Make it possible to run as standalone
-- [x] Export Coinbase Pro trading history
+- [x] Export Binance trading history
 - [x] Build releases automatically
-- [ ] Export Binance trading history
+- [ ] Export Coinbase Pro trading history
 - [ ] Export Kraken trading history
 - [ ] Support Bittrex
