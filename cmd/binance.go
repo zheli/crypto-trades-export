@@ -60,13 +60,13 @@ Example 2, export trading records for all available trading pair (it will take a
 
 func init() {
 	rootCmd.AddCommand(binanceCmd)
-	binanceCmd.Flags().StringP("key", "k", "", "API key")
-	binanceCmd.Flags().StringP("secret", "s", "", "API secret")
-	binanceCmd.Flags().BoolP("debug", "d", false, "Enable debug mode")
+	binanceCmd.PersistentFlags().StringP("key", "k", "", "API key")
+	binanceCmd.PersistentFlags().StringP("secret", "s", "", "API secret")
+	binanceCmd.PersistentFlags().BoolP("debug", "d", false, "Enable debug mode")
 	binanceCmd.Flags().StringP("pair", "p", "", "Trading pairs")
 }
 
-func getTradingType(trade *binance.TradeV3)  string  {
+func getTradingType(trade binance.TradeV3)  string  {
 	if (trade.IsBuyer) {
 		return "bid"
 	} else {
@@ -93,10 +93,20 @@ func exportTrades(apiKey string, apiSecret string, tradingPair string, output st
 		return
 	}
 	w := csv.NewWriter(f)
-	header := []string{"exchange", "pair", "trading_type", "quantity", "price", "timestamp"}
+	header := []string{"timestamp", "exchange", "pair", "trading_type", "quantity", "price"}
 	w.Write(header)
 
-	if "" == tradingPair {
+	if tradingPair != "" {
+		trades, err := listTradesService.Symbol(tradingPair).Do(context.Background())
+		if err != nil {
+			fmt.Printf("Failed to download, %s\n", err)
+			fmt.Printf("Code: %d\n", err.(*common.APIError).Code)
+		}
+		if len(trades) > 0 {
+			fmt.Printf("Found %d trading history for %s\n", len(trades), tradingPair)
+			writeTrades(trades, w)
+		}
+	} else {
 		fmt.Printf("Found %d trading pairs\n", len(exchangeInfo.Symbols))
 		bar := pb.StartNew(len(exchangeInfo.Symbols))
 		for _, s := range exchangeInfo.Symbols {
@@ -107,46 +117,29 @@ func exportTrades(apiKey string, apiSecret string, tradingPair string, output st
 				continue
 			}
 			if len(trades) > 0 {
-				fmt.Printf("Found trading history for %s\n", s.Symbol)
-				for _, t := range trades {
-					row := []string{
-						"binance",
-						t.Symbol,
-						getTradingType(t),
-						t.Quantity,
-						t.Price,
-						millionsecondsToDatetimeStringg(t.Time),
-					}
-					w.Write(row)
-				}
+				fmt.Printf("Found %d trading history for %s\n", len(trades), tradingPair)
+				writeTrades(trades, w)
 			}
 			bar.Increment()
 		}
-	} else {
-		trades, err := listTradesService.Symbol(tradingPair).Do(context.Background())
-		if err != nil {
-			fmt.Printf("Failed to download, %s\n", err)
-			fmt.Printf("Code: %d\n", err.(*common.APIError).Code)
-		}
-		if len(trades) > 0 {
-			fmt.Printf("Found trading history for %s\n", tradingPair)
-			for _, t := range trades {
-				row := []string{
-					"binance",
-					t.Symbol,
-					getTradingType(t),
-					t.Quantity,
-					t.Price,
-					millionsecondsToDatetimeStringg(t.Time),
-				}
-				w.Write(row)
-			}
-		}
 	}
-
 
 	w.Flush()
 	if err := w.Error(); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func writeTrades(trades []*binance.TradeV3, writer *csv.Writer) {
+	for _, t := range trades {
+		row := []string{
+			millionsecondsToDatetimeStringg(t.Time),
+			"binance",
+			t.Symbol,
+			getTradingType(*t),
+			t.Quantity,
+			t.Price,
+		}
+		writer.Write(row)
 	}
 }

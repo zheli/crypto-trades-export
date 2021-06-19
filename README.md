@@ -19,6 +19,14 @@ crypto-trades-export binance \
   --output my-trades-2020.csv
 ```
 
+### Binance
+List all available trading pairs:
+```
+crypto-trades-export binance list\
+  --key MY_BINANCE_API_KEY \
+  --secret MY_BINANCE_API_SECRET \
+```
+
 ## Roadmap
 - [x] Make it possible to run as standalone
 - [x] Export Binance trading history
