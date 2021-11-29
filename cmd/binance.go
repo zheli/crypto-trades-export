@@ -117,7 +117,7 @@ func exportTrades(apiKey string, apiSecret string, tradingPair string, output st
 				continue
 			}
 			if len(trades) > 0 {
-				fmt.Printf("Found %d trading history for %s\n", len(trades), tradingPair)
+				fmt.Printf("Found %d trading history for %s\n", len(trades), s.Symbol)
 				writeTrades(trades, w)
 			}
 			bar.Increment()
